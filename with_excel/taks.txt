@@ -1,0 +1,61 @@
+My task:
+Vasya was appointed as a supply manager of a tourist group. He was very serious im nis approach ans made a list of products indicating the amount of callories per 100 g, including the amount of fats, proteins and carbohydrtes per 100 g.He failed to find all the necessary information, therefore some sells was empty (empy cells are equal 0). He usea a strange office package and divided the with a whole and fraction parts virgule. Sheet is available in link: https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx
+Vasya made a list of products for a trip (see the sheet List) inserting the information about the number of the day, the name of the product, and the weight. Count 4 numbers for every day: the summary amount of callories, and the amount of proteins, fats and carbohydrates. Round the numbers to whole down and put with a space. Information for each separate date should be in a separate line. 
+
+Моя задача:
+Васю назначили завхозом в туристической группе и он подошёл к подготовке ответственно, составив справочник продуктов с указанием калорийности на 100 грамм, а также содержание белков, жиров и углеводов на 100 грамм продукта. Ему не удалось найти всю информацию, поэтому некоторые ячейки остались незаполненными (можно считать их значение равным нулю). Также он использовал какой-то странный офисный пакет и разделял целую и дробную часть чисел запятой. Таблица доступна по ссылке https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx
+Вася составил раскладку по продуктам на весь поход (она на листе "Раскладка") с указанием номера дня, названия продукта и его количества в граммах. Для каждого дня посчитайте 4 числа: суммарную калорийность и граммы белков, жиров и углеводов. Числа округлите до целых вниз и введите через пробел. Информация о каждом дне должна выводиться в отдельной строке.
+
+import openpyxl
+
+book = openpyxl.open('trekking3.xlsx', read_only=True)
+directory = book.worksheets[0]  # Справочник калорий
+schedule = book.worksheets[1]  # Расписание: день, что едим, в каких количествах
+daily_calories = {} # Словарь, где в дне будет записываться количество потребляемых калорий, белков, жиров и углеводов
+for row in range(2, schedule.max_row + 1):
+    if schedule[row][0].value not in daily_calories.keys():
+        daily_calories[schedule[row][0].value] = []
+total_calories = 0
+total_proteins = 0
+total_fats = 0
+total_carbohydrates = 0
+for day in daily_calories.keys():
+    for row_1 in range(2, schedule.max_row+1):
+        if day == schedule[row_1][0].value:
+            for row_0 in range(2, directory.max_row+1):
+                if directory[row_0][0].value == schedule[row_1][1].value:
+                    total_calories += (float(directory[row_0][1].value) / 100 * float(schedule[row_1][2].value))
+
+                    if directory[row_0][2].value is None:
+                        total_proteins += (0/ 100 * float(schedule[row_1][2].value))
+                    else:
+                        total_proteins += (float(directory[row_0][2].value) / 100 * float(schedule[row_1][2].value))
+
+                    if directory[row_0][3].value is None:
+                        total_fats += (0 / 100 * float(schedule[row_1][2].value))
+                    else:
+                        total_fats += (float(directory[row_0][3].value) / 100 * float(schedule[row_1][2].value))
+
+                    if directory[row_0][4].value is None:
+                        total_carbohydrates += (0 / 100 * float(schedule[row_1][2].value))
+                    else:
+                        total_carbohydrates += (directory[row_0][4].value / 100 * float(schedule[row_1][2].value))
+    daily_calories[day] = [int(total_calories), int(total_proteins), int(total_fats), int(total_carbohydrates)]
+    total_calories = 0
+    total_proteins = 0
+    total_fats = 0
+    total_carbohydrates = 0
+for i in daily_calories:
+    print("В {} день мы съели {} ккал.. Из них белки составляют - {} гр., жиры - {} гр., углеводы - {}гр.".format
+          (i, daily_calories[i][0], daily_calories[i][1], daily_calories[i][2], daily_calories[i][3]))
+          
+В 1 день мы съели 2405 ккал.. Из них белки составляют - 82 гр., жиры - 154 гр., углеводы - 172гр.
+В 2 день мы съели 4963 ккал.. Из них белки составляют - 203 гр., жиры - 307 гр., углеводы - 302гр.
+В 3 день мы съели 5219 ккал.. Из них белки составляют - 178 гр., жиры - 267 гр., углеводы - 502гр.
+В 4 день мы съели 4873 ккал.. Из них белки составляют - 241 гр., жиры - 204 гр., углеводы - 537гр.
+В 5 день мы съели 5278 ккал.. Из них белки составляют - 243 гр., жиры - 314 гр., углеводы - 367гр.
+В 6 день мы съели 4451 ккал.. Из них белки составляют - 190 гр., жиры - 188 гр., углеводы - 497гр.
+В 7 день мы съели 4806 ккал.. Из них белки составляют - 205 гр., жиры - 265 гр., углеводы - 386гр.
+В 8 день мы съели 5738 ккал.. Из них белки составляют - 264 гр., жиры - 195 гр., углеводы - 720гр.
+В 9 день мы съели 1766 ккал.. Из них белки составляют - 66 гр., жиры - 90 гр., углеводы - 171гр.
+
