@@ -1,0 +1,30 @@
+Задача простая: Получить данные с ФИО и зарплатой из 1000 эксель файлов.
+
+Главный бухгалтер компании "Рога и копыта" случайно удалил ведомость с начисленной зарплатой. К счастью, у него сохранились расчётные листки всех сотрудников. 
+Помогите по этим расчётным листкам восстановить зарплатную ведомость. 
+Архив с расчётными листками доступен по ссылке https://stepik.org/media/attachments/lesson/245299/rogaikopyta.zip 
+(вы можете скачать и распаковать его вручную или самостоятельно научиться делать это с помощью скрипта на Питоне).
+Ведомость должна содержать 1000 строк, в каждой строке должно быть указано ФИО сотрудника и, через пробел, его зарплата. Сотрудники должны быть упорядочены по алфавиту.
+
+import zipfile
+import openpyxl
+import os
+
+salary_list = {}
+z = zipfile.ZipFile('rogaikopyta.zip', 'r')
+z.extractall('D:\Python\Lessons\pythonProject\company')
+files = os.listdir("D:\Python\Lessons\pythonProject\company")
+for file in files:
+    book = openpyxl.open("D:\Python\Lessons\pythonProject\company\\" + file, read_only=True)
+    book = book.active
+    salary_list[book[2][1].value] = book[2][3].value
+for key, value in sorted(salary_list.items(), key=lambda para : (para[0], para[1])):
+    print(key, value)
+    
+#Александров Александр Александрович 19279
+#Александров Александр Алексеевич 111877
+#Александров Александр Васильевич 121425
+.........
+#Сидоров Сидор Петрович 46026
+#Сидоров Сидор Сергеевич 108788
+#Сидоров Сидор Сидорович 130081
